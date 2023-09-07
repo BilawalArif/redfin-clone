@@ -20,4 +20,4 @@ export interface User extends mongoose.Document {
   resetPasswordTokenExpiry: number;
 }
 
-export const PropertyModel = mongoose.model<User>('User', UserSchema);
+export const UserModel = mongoose.model<User>('User', UserSchema);

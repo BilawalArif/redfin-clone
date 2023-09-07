@@ -31,8 +31,6 @@ export class AuthController {
     private authService: AuthService,
     private verifyAccountMailService: VerifyAccountMailService,
     private resetPasswordMailService: ResetPasswordMailService,
-
-  
   ) {}
 
   @Public()
@@ -63,8 +61,7 @@ export class AuthController {
   async signup(@Res() res, @Body() createUserDto: CreateUserDto) {
     try {
       const user = await this.authService.createUser(createUserDto);
-      console.log("🚀 ~ file: auth.controller.ts:70 ~ AuthController ~ signup ~ user:", user)
-      
+
       await this.authService.sendVerificationEmail(user);
 
       this.authService.sendSignupResponse(res, user);

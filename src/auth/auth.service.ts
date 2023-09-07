@@ -30,6 +30,7 @@ export class AuthService {
   private async createAndSaveUser(userDto: CreateUserDto): Promise<User> {
     try {
       const createdUser = new this.userModel(userDto);
+
       return createdUser.save();
     } catch (error) {
       throw new AllExceptionsFilter(error);
@@ -40,13 +41,17 @@ export class AuthService {
     try {
       const hashedPassword = await this.hashPassword(createUserDto.password);
 
-      const createdUser = this.createAndSaveUser({
+      const createdUser = await this.createAndSaveUser({
         ...createUserDto,
         password: hashedPassword,
       });
 
       return createdUser;
     } catch (error) {
+      console.log(
+        '🚀 ~ file: auth.service.ts:52 ~ AuthService ~ createUser ~ error:',
+        error,
+      );
       throw new AllExceptionsFilter(error);
     }
   }
@@ -75,7 +80,7 @@ export class AuthService {
       }
       return user;
     } catch (error) {
-      throw error; 
+      throw error;
     }
   }
 
@@ -91,7 +96,6 @@ export class AuthService {
     }
   }
 
-  
   async saveGoogleUser(createUserDto: CreateUserDto): Promise<User> {
     const newUser = await this.createGoogleUser(createUserDto);
 

@@ -34,7 +34,7 @@ export const UserSchema = new mongoose.Schema(
       required: true,
     },
     country: {
-      type: String, 
+      type: String,
       required: true,
     },
     zip: {
@@ -44,7 +44,7 @@ export const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: Object.values(Role), // Use the values from the Role enum
-      default: Role.Influencer, // Default role if not specified
+      default: Role.User, // Default role if not specified
     },
     isVerified: { type: Boolean, default: false },
     verificationToken: String,

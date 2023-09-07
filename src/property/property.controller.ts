@@ -7,6 +7,7 @@ import {
   Body,
   Delete,
   Patch,
+  Res,
   BadRequestException,
   NotFoundException,
   InternalServerErrorException,
@@ -16,6 +17,7 @@ import * as fs from 'fs';
 import { PropertySearchCriteria } from 'src/dtos/PropertySearchCriteria .dto';
 import { Comment } from 'src/schemas/comment.schema';
 import { Property } from 'src/models/property.model';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('properties')
 export class PropertyController {
@@ -34,12 +36,13 @@ export class PropertyController {
   //     throw new Error('Failed to insert data');
   //   }
   // }
- 
 
+  @Public()
   @Get('paginated-properties')
   async getPaginatedProperties(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 20,
+    @Res() res,
   ) {
     try {
       const properties = await this.propertyService.findPaginatedProperties(
@@ -47,17 +50,24 @@ export class PropertyController {
         limit,
       );
       const totalCount = await this.propertyService.getPropertyCount();
-      return {
+      res.status(200).json({
         properties,
         totalCount,
         currentPage: page,
         totalPages: Math.ceil(totalCount / limit),
-      };
+      });
+      // return {
+      //   properties,
+      //   totalCount,
+      //   currentPage: page,
+      //   totalPages: Math.ceil(totalCount / limit),
+      // };
     } catch (error) {
-      throw new InternalServerErrorException('Error while fetching properties');
+      throw error;
     }
   }
 
+  @Public()
   @Get('search')
   async searchProperties(@Query() criteria: PropertySearchCriteria) {
     try {
@@ -70,6 +80,7 @@ export class PropertyController {
     }
   }
 
+  @Public()
   @Post(':propertyId/comments')
   async addComment(
     @Param('propertyId') propertyId: string,
@@ -86,6 +97,7 @@ export class PropertyController {
     }
   }
 
+  @Public()
   @Delete(':propertyId/comments/:commentId')
   async deleteComment(
     @Param('propertyId') propertyId: string,
@@ -102,6 +114,7 @@ export class PropertyController {
     }
   }
 
+  @Public()
   @Patch(':propertyId/comments/:commentId')
   async editComment(
     @Param('propertyId') propertyId: string,
@@ -120,6 +133,7 @@ export class PropertyController {
     }
   }
 
+  @Public()
   @Post(':id/upvote')
   async upvoteProperty(@Param('id') id: string): Promise<Property> {
     try {
@@ -137,6 +151,7 @@ export class PropertyController {
     }
   }
 
+  @Public()
   @Post(':id/downvote')
   async downvoteProperty(@Param('id') id: string): Promise<Property> {
     try {
@@ -154,6 +169,25 @@ export class PropertyController {
     }
   }
 
+  @Public()
+  @Get('update-image-urls')
+  async updateImageUrls() {
+    try {
+      const result = await this.propertyService.updatePropertiesWithImageUrl();
+      return { message: result };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Public()
+  @Delete('delete-image-urls')
+  async deleteImageUrls() {
+    const result = await this.propertyService.deleteImageUrlFromProperties();
+    return { message: result };
+  }
+
+  @Public()
   @Get(':id')
   async getProperty(@Param('id') id: string): Promise<Property> {
     return this.propertyService.findById(id);

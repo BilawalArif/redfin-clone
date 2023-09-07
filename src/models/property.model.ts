@@ -25,6 +25,8 @@ export interface Property extends Document {
   comments: Comment[];
   upvotes: number;
   downvotes: number;
+  image_url: string; // New property to add
+
 }
 
 export const PropertyModel = mongoose.model<Property>(

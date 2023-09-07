@@ -21,6 +21,7 @@ export const PropertySchema = new mongoose.Schema({
   latitude: Number,
   longitude: Number,
   description: String,
+  image_url: String, 
   comments: [CommentSchema],
   upvotes: { type: Number, default: 0 },
   downvotes: { type: Number, default: 0 },

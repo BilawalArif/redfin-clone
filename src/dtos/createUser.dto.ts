@@ -23,7 +23,7 @@ export class CreateUserDto {
   phoneNumber: number;
 
   @IsNotEmpty()
-  @IsInt()
+  @IsString()
   address: string;
 
   @IsNotEmpty()

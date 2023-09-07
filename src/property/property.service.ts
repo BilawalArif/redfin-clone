@@ -54,9 +54,7 @@ export class PropertyService {
       const skip = (page - 1) * limit;
       return this.propertyModel.find().skip(skip).limit(limit).exec();
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Error while fetching properties',
-      );
+      throw new InternalServerErrorException('Error while fetching properties');
     }
   }
 
@@ -64,9 +62,7 @@ export class PropertyService {
     try {
       return this.propertyModel.countDocuments().exec();
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Error while fetching properties',
-      );
+      throw new InternalServerErrorException('Error while fetching properties');
     }
   }
 
@@ -166,4 +162,37 @@ export class PropertyService {
       throw new InternalServerErrorException('Error while updating comment');
     }
   }
+
+  generateRandomImageUrl() {
+    const baseUrl = 'https://picsum.photos/'; // Base URL for Lorem Picsum
+    const imageWidth = 800; // Adjust width as needed
+    const imageHeight = 600; // Adjust height as needed
+
+    // Generate a random image ID (replace '1000' with the desired range)
+    const imageId = Math.floor(Math.random() * 1000);
+
+    return `${baseUrl}${imageWidth}/${imageHeight}?random=${imageId}`;
+  }
+
+  async updatePropertiesWithImageUrl() {
+    try {
+      const properties = await this.propertyModel.find({}).exec();
+
+      for (const property of properties) {
+        property.image_url = this.generateRandomImageUrl(); // Use the function from the previous answer
+        await property.save();
+      }
+
+      return 'All properties updated.';
+    } catch (error) {
+      throw error;
+    }
+  }
+  async deleteImageUrlFromProperties() {
+    // Update all documents to remove the 'image_url' property
+    await this.propertyModel.updateMany({}, { $unset: { image_url: 1 } });
+    
+    return 'image_url property deleted from all properties.';
+  }
+  
 }
